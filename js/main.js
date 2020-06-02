@@ -1,7 +1,33 @@
 //var data = [25, 20, 10, 12, 15];
 
+d3.json("data/buildings.json").then(function (data) {
+    data.forEach((d) => {
+        d.height = +d.height;
+    });
+
+    var svg = d3.select("#buildings").append("svg")
+        .attr("width", 400)
+        .attr("height", 400);
+
+    var rects = svg.selectAll("rect")
+        .data(data);
+
+    rects.enter()
+        .append("rect")
+        .attr("x", function (d, i) {
+            console.log(d);
+            return (i * 50) + 25;
+        })
+        .attr("y", 25)
+        .attr("width", 25)
+        .attr("height", function (d, i) {
+            return d.height;
+        })
+});
+
 d3.tsv("data/ages.tsv").then(function (data) {
     data.forEach(function (d) {
+        // Converting values to integers
         d.age = +d.age;
     });
 
