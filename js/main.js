@@ -1,22 +1,38 @@
-var data = [25, 20, 10, 12, 15];
+//var data = [25, 20, 10, 12, 15];
 
-var svg = d3.select("#chart-area").append("svg")
-    .attr("width", 400)
-    .attr("height", 400);
+d3.tsv("data/ages.tsv").then(function (data) {
+    data.forEach(function (d) {
+        d.age = +d.age;
+    });
 
-var circles = svg.selectAll("circle")
-    .data(data);
+    var svg = d3.select("#chart-area").append("svg")
+        .attr("width", 400)
+        .attr("height", 400);
 
-circles.enter()
-    .append("circle")
-    .attr("cx", (d, i) => {
-        return (i * 50) + 25;
-    })
-    .attr("cy", 30)
-    .attr("r", (d) => {
-        return 25;
-    })
-    .attr("fill", "red");
+    var circles = svg.selectAll("circle")
+        .data(data);
+
+    circles.enter()
+        .append("circle")
+        .attr("cx", function (d, i) {
+            console.log(d);
+            return (i * 50) + 25;
+        })
+        .attr("cy", 25)
+        .attr("r", function (d) {
+            return d.age * 2;
+        })
+        .attr("fill", function (d) {
+            if (d.name == "Tony") {
+                return "blue";
+            }
+            else {
+                return "red";
+            }
+        });
+}).catch(function (error) {
+    console.log(error);
+})
 
 /*
 var circle = svg.append("circle")
