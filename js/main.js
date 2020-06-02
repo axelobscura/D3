@@ -16,13 +16,16 @@ d3.json("data/buildings.json").then(function (data) {
         .append("rect")
         .attr("x", function (d, i) {
             console.log(d);
-            return (i * 50) + 25;
+            return (i * 60);
         })
-        .attr("y", 25)
+        .attr("y", 0)
         .attr("width", 25)
-        .attr("height", function (d, i) {
+        .attr("height", function (d) {
             return d.height;
         })
+        .attr("fill", function (d) {
+            return "grey";
+        });
 });
 
 d3.tsv("data/ages.tsv").then(function (data) {
