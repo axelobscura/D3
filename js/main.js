@@ -16,7 +16,24 @@ var svg = d3.select("#buildings")
     .attr("height", height + margin.top + margin.bottom);
 
 var g = svg.append("g")
-    .attr("transform", "translate(" + margin.left + ", " + margin.top + ")")
+    .attr("transform", "translate(" + margin.left + ", " + margin.top + ")");
+
+g.append("text")
+    .attr("class", "x axis-label")
+    .attr("x", width / 2)
+    .attr("y", height + 100)
+    .attr("font-size", "30px")
+    .attr("text-anchor", "middle")
+    .text("Los edificios más altos del mundo");
+
+g.append("text")
+    .attr("class", "y axis-label")
+    .attr("x", - (height / 2))
+    .attr("y", -60)
+    .attr("font-size", "30px")
+    .attr("text-anchor", "middle")
+    .attr("transform", "rotate(-90)")
+    .text("Altura (m)");
 
 d3.json("data/buildings.json").then(function (data) {
 
@@ -39,6 +56,26 @@ d3.json("data/buildings.json").then(function (data) {
             return d.height
         })])
         .range([0, height]);
+
+    var xAxisCall = d3.axisBottom(x);
+    g.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0, " + height + ")")
+        .call(xAxisCall)
+        .selectAll("text")
+        .attr("y", "10")
+        .attr("x", "-5")
+        .attr("text-anchor", "end")
+        .attr("transform", "rotate(-20)");
+
+    var yAxisCall = d3.axisLeft(y)
+        .ticks(5)
+        .tickFormat(function (d) {
+            return d + "m"
+        });
+    g.append("g")
+        .attr("class", "y-axis")
+        .call(yAxisCall);
 
     var rects = g.selectAll("rect")
         .data(data)
