@@ -1,8 +1,22 @@
 //var data = [25, 20, 10, 12, 15];
 
-var svg = d3.select("#buildings").append("svg")
-    .attr("width", 400)
-    .attr("height", 400);
+var margin = {
+    left: 100,
+    right: 10,
+    top: 10,
+    bottom: 100
+}
+
+var width = 600 - margin.left - margin.right;
+var height = 400 - margin.top - margin.bottom;
+
+var svg = d3.select("#buildings")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom);
+
+var g = svg.append("g")
+    .attr("transform", "translate(" + margin.left + ", " + margin.top + ")")
 
 d3.json("data/buildings.json").then(function (data) {
 
@@ -13,23 +27,20 @@ d3.json("data/buildings.json").then(function (data) {
     });
 
     var x = d3.scaleBand()
-        .domain([
-            "Burj Khalifa",
-            "Shanghai Tower",
-            "Abraj Al-Bait Clock Tower",
-            "Ping An Finance Centre",
-            "Lotte World Tower",
-            "Hotel de México"
-        ])
-        .range([0, 400])
+        .domain(data.map((d) => {
+            return d.name
+        }))
+        .range([0, width])
         .paddingInner(0.3)
         .paddingOuter(0.3);
 
     var y = d3.scaleLinear()
-        .domain([0, 828])
-        .range([0, 400]);
+        .domain([0, d3.max(data, function (d) {
+            return d.height
+        })])
+        .range([0, height]);
 
-    var rects = svg.selectAll("rect")
+    var rects = g.selectAll("rect")
         .data(data)
         .enter()
         .append("rect")
