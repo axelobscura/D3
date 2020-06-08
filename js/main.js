@@ -18,6 +18,26 @@ var svg = d3.select("#buildings")
 var g = svg.append("g")
     .attr("transform", "translate(" + margin.left + ", " + margin.top + ")");
 
+var x = d3.scaleBand()
+    .range([0, width])
+    .paddingInner(0.3)
+    .paddingOuter(0.3);
+
+var y = d3.scaleLinear()
+    .range([height, 0]);
+
+var xAxisGroup = g.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0, " + height + ")");
+// .selectAll("text")
+// .attr("y", "10")
+// .attr("x", "-5")
+// .attr("text-anchor", "end")
+// .attr("transform", "rotate(-20)");
+
+var yAxisGroup = g.append("g")
+    .attr("class", "y-axis");
+
 g.append("text")
     .attr("class", "x axis-label")
     .attr("x", width / 2)
@@ -37,64 +57,54 @@ g.append("text")
 
 d3.json("data/buildings.json").then(function (data) {
 
-    console.log(data);
-
     data.forEach((d) => {
         d.height = +d.height;
     });
 
-    var x = d3.scaleBand()
-        .domain(data.map((d) => {
-            return d.name
-        }))
-        .range([0, width])
-        .paddingInner(0.3)
-        .paddingOuter(0.3);
+    d3.interval(function () {
+        update(data)
+    }, 1000);
 
-    var y = d3.scaleLinear()
-        .domain([0, d3.max(data, function (d) {
-            return d.height
-        })])
-        .range([height, 0]);
+    update(data);
+});
+
+function update(data) {
+    x.domain(data.map((d) => {
+        return d.name
+    }));
+
+    y.domain([0, d3.max(data, function (d) {
+        return d.height
+    })]);
 
     var xAxisCall = d3.axisBottom(x);
-    g.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0, " + height + ")")
-        .call(xAxisCall)
-        .selectAll("text")
-        .attr("y", "10")
-        .attr("x", "-5")
-        .attr("text-anchor", "end")
-        .attr("transform", "rotate(-20)");
+    xAxisGroup.call(xAxisCall);
 
     var yAxisCall = d3.axisLeft(y)
-        .ticks(5)
         .tickFormat(function (d) {
-            return d + "m"
+            return d + " m"
         });
-    g.append("g")
-        .attr("class", "y-axis")
-        .call(yAxisCall);
+    yAxisGroup.call(yAxisCall);
 
-    var rects = g.selectAll("rect")
-        .data(data)
-        .enter()
-        .append("rect")
-        .attr("y", function (d) {
-            return y(d.height);
-        })
-        .attr("x", function (d) {
-            return x(d.name)
-        })
-        .attr("width", x.bandwidth)
-        .attr("height", function (d) {
-            return height - y(d.height);
-        })
-        .attr("fill", function (d) {
-            return "red";
-        });
-});
+
+    // var rects = g.selectAll("rect")
+    //     .data(data)
+    //     .enter()
+    //     .append("rect")
+    //     .attr("y", function (d) {
+    //         return y(d.height);
+    //     })
+    //     .attr("x", function (d) {
+    //         return x(d.name)
+    //     })
+    //     .attr("width", x.bandwidth)
+    //     .attr("height", function (d) {
+    //         return height - y(d.height);
+    //     })
+    //     .attr("fill", function (d) {
+    //         return "red";
+    //     });
+}
 /*
 d3.tsv("data/ages.tsv").then(function (data) {
     data.forEach(function (d) {
