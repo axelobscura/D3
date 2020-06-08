@@ -86,7 +86,27 @@ function update(data) {
         });
     yAxisGroup.call(yAxisCall);
 
+    var rects = g.selectAll("rect")
+        .data(data);
 
+    rects.exit().remove();
+
+    rects
+        .attr("y", function (d) { return y(d.height) })
+        .attr("x", function (d) { return x(d.name) })
+        .attr("height", function (d) { return height - y(d.height) })
+        .attr("width", x.bandwidth)
+        .attr("fill", "red");
+
+    rects.enter()
+        .append("rect")
+        .attr("y", function (d) { return y(d.height) })
+        .attr("x", function (d) { return x(d.name) })
+        .attr("height", function (d) { return height - y(d.height) })
+        .attr("width", x.bandwidth)
+        .attr("fill", "red");
+
+    console.log(rects);
     // var rects = g.selectAll("rect")
     //     .data(data)
     //     .enter()
