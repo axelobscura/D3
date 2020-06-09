@@ -97,7 +97,7 @@ function update(data) {
         });
     yAxisGroup.transition(t).call(yAxisCall);
 
-    var rects = g.selectAll("rect")
+    var rects = g.selectAll("circle")
         .data(data, function (d) {
             return d.name
         });
@@ -105,32 +105,28 @@ function update(data) {
     rects.exit()
         .attr("fill", "black")
         .transition(t)
-        .attr("y", y(0))
-        .attr("height", 0)
+        .attr("cy", y(0))
         .remove();
 
     rects
         .transition(t)
-        .attr("y", function (d) { return y(d[value]) })
-        .attr("x", function (d) { return x(d.name) })
-        .attr("height", function (d) { return height - y(d[value]) })
-        .attr("width", x.bandwidth)
+        .attr("cy", function (d) { return y(d[value]) })
+        .attr("cx", function (d) { return x(d.name) })
+        .attr("r", 5)
         .attr("fill", "red");
 
     rects.enter()
-        .append("rect")
+        .append("circle")
 
-        .attr("x", function (d) { return x(d.name) })
+        .attr("cx", function (d) { return x(d.name) + x.bandwidth() / 2 })
 
-        .attr("width", x.bandwidth)
+        .attr("r", 5)
         .attr("fill", "red")
-        .attr("y", y(0))
-        .attr("height", 0)
+        .attr("cy", y(0))
         .transition(t)
-        .attr("y", function (d) { return y(d.height) })
-        .attr("height", function (d) { return height - y(d.height) })
+        .attr("cy", function (d) { return y(d.height) })
 
-    var label = flag ? "PROFIT" : "REVENUE";
+    var label = flag ? "ALTURA" : "COSTO";
     yLabel.text(label);
 
     // var rects = g.selectAll("rect")
