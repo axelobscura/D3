@@ -10,6 +10,8 @@ var margin = {
 var width = 600 - margin.left - margin.right;
 var height = 400 - margin.top - margin.bottom;
 
+var flag = true;
+
 var svg = d3.select("#buildings")
     .append("svg")
     .attr("width", width + margin.left + margin.right)
@@ -46,7 +48,7 @@ g.append("text")
     .attr("text-anchor", "middle")
     .text("Los edificios más altos del mundo");
 
-g.append("text")
+var yLabel = g.append("text")
     .attr("class", "y axis-label")
     .attr("x", - (height / 2))
     .attr("y", -60)
@@ -61,20 +63,26 @@ d3.json("data/buildings.json").then(function (data) {
         d.height = +d.height;
     });
 
+    console.log(data);
+
     d3.interval(function () {
         update(data)
+        flag = !flag
     }, 1000);
 
     update(data);
 });
 
 function update(data) {
+
+    var value = flag ? "revenue" : "profit";
+
     x.domain(data.map((d) => {
         return d.name
     }));
 
     y.domain([0, d3.max(data, function (d) {
-        return d.height
+        return d[value]
     })]);
 
     var xAxisCall = d3.axisBottom(x);
@@ -92,9 +100,9 @@ function update(data) {
     rects.exit().remove();
 
     rects
-        .attr("y", function (d) { return y(d.height) })
+        .attr("y", function (d) { return y(d[value]) })
         .attr("x", function (d) { return x(d.name) })
-        .attr("height", function (d) { return height - y(d.height) })
+        .attr("height", function (d) { return height - y(d[value]) })
         .attr("width", x.bandwidth)
         .attr("fill", "red");
 
@@ -106,7 +114,9 @@ function update(data) {
         .attr("width", x.bandwidth)
         .attr("fill", "red");
 
-    console.log(rects);
+    var label = flag ? "PROFIT" : "REVENUE";
+    yLabel.text(label);
+
     // var rects = g.selectAll("rect")
     //     .data(data)
     //     .enter()

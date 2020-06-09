@@ -1,26 +1,38 @@
 [
     {
         "name": "Burj Khalifa",
-        "height": "850"
+        "height": "850",
+        "revenue": 15432,
+        "profit": 20
     },
     {
         "name": "Shanghai Tower",
-        "height": "623"
+        "height": "623",
+        "revenue": 25432,
+        "profit": 25
     },
     {
         "name": "Abraj Al-Bait Clock Tower",
-        "height": "601"
+        "height": "601",
+        "revenue": 12100,
+        "profit": 40
     },
     {
         "name": "Ping An Finance Centre",
-        "height": "599"
+        "height": "599",
+        "revenue": 11900,
+        "profit": 75
     },
     {
         "name": "Lotte World Tower",
-        "height": "544.5"
+        "height": "544.5",
+        "revenue": 19300,
+        "profit": 10
     },
     {
         "name": "Hotel de México",
-        "height": "500.5"
+        "height": "500.5",
+        "revenue": 15432,
+        "profit": 25
     }
 ]
