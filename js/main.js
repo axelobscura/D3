@@ -12,6 +12,8 @@ var height = 400 - margin.top - margin.bottom;
 
 var flag = true;
 
+var t = d3.transition().duration(750);
+
 var svg = d3.select("#buildings")
     .append("svg")
     .attr("width", width + margin.left + margin.right)
@@ -66,7 +68,8 @@ d3.json("data/buildings.json").then(function (data) {
     console.log(data);
 
     d3.interval(function () {
-        update(data)
+        var newData = flag ? data : data.slice(1);
+        update(newData)
         flag = !flag
     }, 1000);
 
@@ -86,20 +89,28 @@ function update(data) {
     })]);
 
     var xAxisCall = d3.axisBottom(x);
-    xAxisGroup.call(xAxisCall);
+    xAxisGroup.transition(t).call(xAxisCall);
 
     var yAxisCall = d3.axisLeft(y)
         .tickFormat(function (d) {
             return d + " m"
         });
-    yAxisGroup.call(yAxisCall);
+    yAxisGroup.transition(t).call(yAxisCall);
 
     var rects = g.selectAll("rect")
-        .data(data);
+        .data(data, function (d) {
+            return d.name
+        });
 
-    rects.exit().remove();
+    rects.exit()
+        .attr("fill", "black")
+        .transition(t)
+        .attr("y", y(0))
+        .attr("height", 0)
+        .remove();
 
     rects
+        .transition(t)
         .attr("y", function (d) { return y(d[value]) })
         .attr("x", function (d) { return x(d.name) })
         .attr("height", function (d) { return height - y(d[value]) })
@@ -108,11 +119,16 @@ function update(data) {
 
     rects.enter()
         .append("rect")
-        .attr("y", function (d) { return y(d.height) })
+
         .attr("x", function (d) { return x(d.name) })
-        .attr("height", function (d) { return height - y(d.height) })
+
         .attr("width", x.bandwidth)
-        .attr("fill", "red");
+        .attr("fill", "red")
+        .attr("y", y(0))
+        .attr("height", 0)
+        .transition(t)
+        .attr("y", function (d) { return y(d.height) })
+        .attr("height", function (d) { return height - y(d.height) })
 
     var label = flag ? "PROFIT" : "REVENUE";
     yLabel.text(label);
