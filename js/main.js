@@ -117,9 +117,7 @@ function update(data) {
 
     rects.enter()
         .append("circle")
-
         .attr("cx", function (d) { return x(d.name) + x.bandwidth() / 2 })
-
         .attr("r", 5)
         .attr("fill", "red")
         .attr("cy", y(0))
